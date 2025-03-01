@@ -1,9 +1,12 @@
 
 import React, { useEffect, useRef } from "react";
 import { Check } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
 
 const AboutSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -47,12 +50,20 @@ const AboutSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative order-2 lg:order-1 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700">
             <div className="relative z-10">
-              <div className="glass-panel rounded-2xl p-3 shadow-lg">
-                <img
-                  src="/lovable-uploads/27a9bfa3-0e8e-4de9-ba62-ebf4ad190b1a.png"
-                  alt="About ByteSync Labs"
-                  className="w-full h-auto rounded-xl"
-                />
+              <div className="glass-panel rounded-2xl p-6 shadow-lg flex items-center justify-center">
+                {isDarkMode ? (
+                  <div className="flex items-center">
+                    <span className="text-bytesync-orange text-5xl sm:text-6xl md:text-7xl font-bold">B</span>
+                    <span className="text-foreground text-4xl sm:text-5xl md:text-6xl font-bold">yteSync</span>
+                    <span className="text-xs md:text-sm tracking-widest text-bytesync-orange ml-1 font-light uppercase">Labs</span>
+                  </div>
+                ) : (
+                  <img
+                    src="/lovable-uploads/27a9bfa3-0e8e-4de9-ba62-ebf4ad190b1a.png"
+                    alt="About ByteSync Labs"
+                    className="w-full h-auto rounded-xl"
+                  />
+                )}
               </div>
             </div>
             <div className="absolute -top-6 -right-6 w-40 h-40 bg-bytesync-orange/30 rounded-full z-0 blur-xl"></div>
