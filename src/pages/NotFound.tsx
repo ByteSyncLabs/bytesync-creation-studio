@@ -1,5 +1,11 @@
+
+import React from "react";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import ByteSyncLogo from "@/components/ByteSyncLogo";
+import { Home } from "lucide-react";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,15 +18,26 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
+    <ThemeProvider defaultTheme="dark">
+      <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-96 h-96 bg-bytesync-orange/10 rounded-full filter blur-3xl animate-spin-slow opacity-70"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-bytesync-blue/10 rounded-full filter blur-3xl animate-spin-slow opacity-60"></div>
+        
+        <div className="text-center z-10 glass-panel p-10 rounded-2xl max-w-lg mx-auto animate-fade-in">
+          <ByteSyncLogo className="mx-auto mb-6" />
+          <h1 className="text-6xl font-bold mb-4 text-gradient">404</h1>
+          <p className="text-xl text-muted-foreground mb-8">
+            Oops! The page you're looking for doesn't exist.
+          </p>
+          <Button 
+            onClick={() => window.location.href = "/"}
+            className="bg-bytesync-orange text-white hover:bg-bytesync-orange/90"
+          >
+            <Home className="mr-2 h-4 w-4" /> Back to Home
+          </Button>
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 
