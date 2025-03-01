@@ -49,7 +49,7 @@ const HeroSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <div className="inline-block animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-100">
-              <span className="px-4 py-2 rounded-full bg-bytesync-orange/10 text-bytesync-orange border border-bytesync-orange/20 text-sm font-medium">
+              <span className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-bytesync-orange/10 text-bytesync-orange border border-bytesync-orange/20 text-xs sm:text-sm font-medium inline-block text-center sm:text-left max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                 Driving Business Growth Through Digital Innovation
               </span>
             </div>
