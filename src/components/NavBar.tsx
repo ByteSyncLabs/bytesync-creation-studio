@@ -5,11 +5,13 @@ import ByteSyncLogo from "./ByteSyncLogo";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useTheme } from "./ThemeProvider";
 
 const NavBar: React.FC = () => {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,8 +52,15 @@ const NavBar: React.FC = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <Link to="/">
-          <ByteSyncLogo animated={!isScrolled} />
+        <Link to="/" className="flex items-center">
+          {theme === 'dark' ? (
+            <div className="flex items-center">
+              <span className="text-bytesync-orange text-3xl font-bold">B</span>
+              <span className="text-foreground text-2xl ml-1">yte<span className="text-bytesync-blue">Sync</span></span>
+            </div>
+          ) : (
+            <ByteSyncLogo animated={!isScrolled} />
+          )}
         </Link>
         
         {/* Desktop Navigation */}
