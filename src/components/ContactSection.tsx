@@ -1,10 +1,29 @@
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const ContactSection: React.FC = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -31,9 +50,43 @@ const ContactSection: React.FC = () => {
     };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Form submission logic would go here
+    setIsSubmitting(true);
+
+    // This would typically connect to a backend service
+    // For now, we'll simulate the API call with a timeout
+    try {
+      // Simulate API call to send email and store data
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      console.log("Form submitted:", formData);
+      
+      toast({
+        title: "Message Sent Successfully!",
+        description: "Thank you for reaching out. We'll contact you soon!",
+        duration: 5000,
+      });
+      
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+      });
+      
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        title: "Something went wrong!",
+        description: "There was an error sending your message. Please try again.",
+        variant: "destructive",
+        duration: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -117,6 +170,8 @@ const ContactSection: React.FC = () => {
                   <input 
                     type="text" 
                     id="name" 
+                    value={formData.name}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 bg-transparent border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-bytesync-orange/50"
                     placeholder="Your name"
                     required
@@ -127,6 +182,8 @@ const ContactSection: React.FC = () => {
                   <input 
                     type="email" 
                     id="email" 
+                    value={formData.email}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 bg-transparent border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-bytesync-orange/50"
                     placeholder="your.email@example.com"
                     required
@@ -139,6 +196,8 @@ const ContactSection: React.FC = () => {
                 <input 
                   type="text" 
                   id="subject" 
+                  value={formData.subject}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-2 bg-transparent border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-bytesync-orange/50"
                   placeholder="Subject"
                   required
@@ -150,14 +209,24 @@ const ContactSection: React.FC = () => {
                 <textarea 
                   id="message" 
                   rows={5} 
+                  value={formData.message}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-2 bg-transparent border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-bytesync-orange/50"
                   placeholder="Your message..."
                   required
                 ></textarea>
               </div>
               
-              <Button type="submit" className="w-full bg-bytesync-orange hover:bg-bytesync-orange/90 text-white transition-all">
-                Send Message <Send className="ml-2 h-4 w-4" />
+              <Button 
+                type="submit" 
+                className="w-full bg-bytesync-orange hover:bg-bytesync-orange/90 text-white transition-all"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>Processing <CheckCircle className="ml-2 h-4 w-4 animate-pulse" /></>
+                ) : (
+                  <>Send Message <Send className="ml-2 h-4 w-4" /></>
+                )}
               </Button>
             </form>
           </div>

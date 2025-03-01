@@ -16,12 +16,12 @@ const ByteSyncLogo: React.FC<LogoProps> = ({ animated = true, className = "" }) 
               <img 
                 src="/lovable-uploads/ad222247-deda-41f4-adc4-cdc45d77af62.png" 
                 alt="ByteSync Logo" 
-                className="h-10 object-contain"
+                className="h-10 object-contain drop-shadow-[0_0_10px_rgba(255,193,7,0.5)]"
               />
             </div>
             <div className="animate-text-slide-in ml-1">
               <span className="font-bold text-xl text-foreground">yteSync</span>
-              <span className="text-xs tracking-widest text-muted-foreground">LABS</span>
+              <span className="text-xs tracking-widest text-bytesync-orange ml-1 font-light uppercase">Labs</span>
             </div>
           </div>
         </div>
@@ -30,11 +30,11 @@ const ByteSyncLogo: React.FC<LogoProps> = ({ animated = true, className = "" }) 
           <img 
             src="/lovable-uploads/ad222247-deda-41f4-adc4-cdc45d77af62.png" 
             alt="ByteSync Logo" 
-            className="h-10 object-contain"
+            className="h-10 object-contain drop-shadow-[0_0_10px_rgba(255,193,7,0.5)]"
           />
           <div className="ml-1">
             <span className="font-bold text-xl text-foreground">yteSync</span>
-            <span className="text-xs tracking-widest text-muted-foreground">LABS</span>
+            <span className="text-xs tracking-widest text-bytesync-orange ml-1 font-light uppercase">Labs</span>
           </div>
         </div>
       )}

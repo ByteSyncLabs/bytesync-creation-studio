@@ -4,8 +4,10 @@ import { ThemeToggle } from "./ThemeToggle";
 import ByteSyncLogo from "./ByteSyncLogo";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const NavBar: React.FC = () => {
+  const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -20,13 +22,24 @@ const NavBar: React.FC = () => {
     };
   }, []);
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const navLinks = [
-    { text: "Home", href: "#" },
-    { text: "About", href: "#about" },
-    { text: "Services", href: "#services" },
-    { text: "Testimonials", href: "#testimonials" },
-    { text: "Contact", href: "#contact" },
+    { text: "Home", href: "/" },
+    { text: "About", href: "/about" },
+    { text: "Services", href: "/services" },
+    { text: "Testimonials", href: "/testimonials" },
+    { text: "Contact", href: "/contact" },
   ];
+
+  const isActive = (href: string) => {
+    if (href === '/' && location.pathname === '/') return true;
+    if (href !== '/' && location.pathname.includes(href)) return true;
+    return false;
+  };
 
   return (
     <header
@@ -37,18 +50,24 @@ const NavBar: React.FC = () => {
       }`}
     >
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <ByteSyncLogo animated={!isScrolled} />
+        <Link to="/">
+          <ByteSyncLogo animated={!isScrolled} />
+        </Link>
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           {navLinks.map((link, index) => (
-            <a
+            <Link
               key={index}
-              href={link.href}
-              className="text-foreground hover:text-bytesync-orange transition-colors relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-bytesync-orange after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:origin-right hover:after:origin-left"
+              to={link.href}
+              className={`text-foreground hover:text-bytesync-orange transition-colors relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-bytesync-orange ${
+                isActive(link.href) 
+                ? 'text-bytesync-orange after:scale-x-100' 
+                : 'after:scale-x-0 hover:after:scale-x-100'
+              } after:transition-transform after:origin-right hover:after:origin-left`}
             >
               {link.text}
-            </a>
+            </Link>
           ))}
           <ThemeToggle />
           <Button className="bg-bytesync-orange text-white hover:bg-bytesync-orange/90 transition-all">
@@ -76,14 +95,15 @@ const NavBar: React.FC = () => {
           <div className="container mx-auto px-4 py-4">
             <nav className="flex flex-col space-y-4">
               {navLinks.map((link, index) => (
-                <a
+                <Link
                   key={index}
-                  href={link.href}
-                  className="text-foreground hover:text-bytesync-orange transition-colors py-2"
-                  onClick={() => setMobileMenuOpen(false)}
+                  to={link.href}
+                  className={`text-foreground hover:text-bytesync-orange transition-colors py-2 ${
+                    isActive(link.href) ? 'text-bytesync-orange' : ''
+                  }`}
                 >
                   {link.text}
-                </a>
+                </Link>
               ))}
               <Button className="bg-bytesync-orange text-white hover:bg-bytesync-orange/90 transition-all w-full">
                 Get Started
