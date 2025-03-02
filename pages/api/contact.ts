@@ -4,6 +4,8 @@ import nodemailer from 'nodemailer';
 
 type ResponseData = {
   message: string;
+  success?: boolean;
+  error?: string;
 };
 
 export default async function handler(
@@ -22,7 +24,15 @@ export default async function handler(
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    // Create transporter
+    // Log email configuration for debugging
+    console.log('Email Configuration:', {
+      service: process.env.EMAIL_SERVICE,
+      user: process.env.EMAIL_USER ? '✓ Present' : '✗ Missing',
+      pass: process.env.EMAIL_PASS ? '✓ Present' : '✗ Missing',
+      from: process.env.EMAIL_FROM,
+    });
+
+    // Create transporter with better error handling
     const transporter = nodemailer.createTransport({
       service: process.env.EMAIL_SERVICE || 'gmail',
       auth: {
@@ -31,8 +41,14 @@ export default async function handler(
       },
     });
 
+    // Verify transporter connection
+    await transporter.verify().catch((error) => {
+      console.error('Transporter verification failed:', error);
+      throw new Error(`Email service connection failed: ${error.message}`);
+    });
+
     // Send confirmation email to user
-    await transporter.sendMail({
+    const userMailResult = await transporter.sendMail({
       from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to: email,
       subject: 'Welcome to ByteSync Labs!',
@@ -51,10 +67,15 @@ export default async function handler(
           <p>The ByteSync Labs Team</p>
         </div>
       `,
+    }).catch((error) => {
+      console.error('User email sending failed:', error);
+      throw new Error(`Failed to send confirmation email: ${error.message}`);
     });
 
+    console.log('User email sent successfully:', userMailResult.messageId);
+
     // Forward the message to ByteSync team
-    await transporter.sendMail({
+    const teamMailResult = await transporter.sendMail({
       from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
       to: process.env.EMAIL_USER,
       subject: `New Contact Form Submission: ${subject}`,
@@ -67,11 +88,23 @@ export default async function handler(
           <p><strong>Message:</strong> ${message}</p>
         </div>
       `,
+    }).catch((error) => {
+      console.error('Team email sending failed:', error);
+      throw new Error(`Failed to forward message to team: ${error.message}`);
     });
 
-    return res.status(200).json({ message: 'Email sent successfully' });
-  } catch (error) {
+    console.log('Team email sent successfully:', teamMailResult.messageId);
+
+    return res.status(200).json({ 
+      message: 'Email sent successfully',
+      success: true 
+    });
+  } catch (error: any) {
     console.error('Error sending email:', error);
-    return res.status(500).json({ message: 'Error sending email' });
+    return res.status(500).json({ 
+      message: 'Error sending email', 
+      error: error.message,
+      success: false
+    });
   }
 }

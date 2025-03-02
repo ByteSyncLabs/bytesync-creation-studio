@@ -13,6 +13,8 @@ export const EmailService = {
     message: string;
   }) => {
     try {
+      console.log('Sending contact form data:', formData);
+      
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -22,9 +24,10 @@ export const EmailService = {
       });
       
       const data = await response.json();
+      console.log('Response from contact API:', data);
       
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        throw new Error(data.error || data.message || 'Something went wrong');
       }
       
       return data;

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { EmailService } from "@/utils/EmailService";
 
@@ -53,7 +53,14 @@ const ContactSection: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      await EmailService.sendContactForm(formData);
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        throw new Error("Please enter a valid email address");
+      }
+
+      console.log("Submitting contact form:", formData);
+      const result = await EmailService.sendContactForm(formData);
+      console.log("Form submission result:", result);
       
       toast({
         title: "Message Sent Successfully!",
@@ -69,11 +76,11 @@ const ContactSection: React.FC = () => {
         message: ""
       });
       
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting form:", error);
       toast({
         title: "Something went wrong!",
-        description: "There was an error sending your message. Please try again.",
+        description: error.message || "There was an error sending your message. Please try again.",
         variant: "destructive",
         duration: 5000,
       });
