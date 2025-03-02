@@ -1,11 +1,11 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
 import { EmailService } from "@/utils/EmailService";
 
 const ContactSection: React.FC = () => {
+  const { toast } = useToast();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -53,16 +53,10 @@ const ContactSection: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
-        throw new Error("Please enter a valid email address");
-      }
-
-      console.log("Submitting contact form:", formData);
-      const result = await EmailService.sendContactForm(formData);
-      console.log("Form submission result:", result);
+      await EmailService.sendContactForm(formData);
       
-      toast.success("Message Sent Successfully!", {
+      toast({
+        title: "Message Sent Successfully!",
         description: "Thank you for reaching out. We've sent you a welcome email!",
         duration: 5000,
       });
@@ -75,10 +69,12 @@ const ContactSection: React.FC = () => {
         message: ""
       });
       
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error submitting form:", error);
-      toast.error("Something went wrong!", {
-        description: error.message || "There was an error sending your message. Please try again.",
+      toast({
+        title: "Something went wrong!",
+        description: "There was an error sending your message. Please try again.",
+        variant: "destructive",
         duration: 5000,
       });
     } finally {
