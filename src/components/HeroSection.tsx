@@ -2,6 +2,8 @@
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 const HeroSection: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -61,21 +63,29 @@ const HeroSection: React.FC = () => {
               From stunning websites to powerful applications, we bring your vision to life.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-400">
-              <Button size="lg" className="bg-bytesync-orange hover:bg-bytesync-orange/90 text-white">
-                Get Started <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="lg">
-                Our Services
-              </Button>
+              <Link href="/contact" passHref>
+                <Button size="lg" className="bg-bytesync-orange hover:bg-bytesync-orange/90 text-white">
+                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/services" passHref>
+                <Button variant="outline" size="lg">
+                  Our Services
+                </Button>
+              </Link>
             </div>
           </div>
           <div className="relative animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-500">
             <div className="relative z-10 animate-float glass-panel rounded-2xl p-2 shadow-lg">
-              <img
-                src="/lovable-uploads/cf61778a-7986-4056-8389-4d26b1a3ebb8.png"
-                alt="ByteSync Labs"
-                className="w-full h-auto rounded-xl"
-              />
+              <div className="relative w-full h-auto">
+                <Image
+                  src="/lovable-uploads/cf61778a-7986-4056-8389-4d26b1a3ebb8.png"
+                  alt="ByteSync Labs"
+                  width={600}
+                  height={400}
+                  className="rounded-xl"
+                />
+              </div>
             </div>
             <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-bytesync-orange rounded-full z-0 animate-pulse opacity-40 blur-xl"></div>
             <div className="absolute -top-6 -left-6 w-32 h-32 bg-bytesync-blue rounded-full z-0 animate-pulse opacity-30 blur-xl"></div>

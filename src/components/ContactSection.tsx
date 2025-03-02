@@ -1,13 +1,11 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { EmailService } from "@/utils/EmailService";
 
 const ContactSection: React.FC = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -54,17 +52,12 @@ const ContactSection: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // This would typically connect to a backend service
-    // For now, we'll simulate the API call with a timeout
     try {
-      // Simulate API call to send email and store data
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log("Form submitted:", formData);
+      await EmailService.sendContactForm(formData);
       
       toast({
         title: "Message Sent Successfully!",
-        description: "Thank you for reaching out. We'll contact you soon!",
+        description: "Thank you for reaching out. We've sent you a welcome email!",
         duration: 5000,
       });
       
