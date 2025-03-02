@@ -15,7 +15,12 @@ export const EmailService = {
     try {
       console.log('Sending contact form data:', formData);
       
-      const response = await fetch('/api/contact', {
+      // For Vite development, we need to construct the correct API URL
+      const baseUrl = import.meta.env.DEV 
+        ? 'http://localhost:3000' // Assuming your Next.js API runs on port 3000
+        : '';
+      
+      const response = await fetch(`${baseUrl}/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

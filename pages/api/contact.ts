@@ -95,12 +95,23 @@ export default async function handler(
 
     console.log('Team email sent successfully:', teamMailResult.messageId);
 
+    // Set CORS headers to allow cross-origin requests during development
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
     return res.status(200).json({ 
       message: 'Email sent successfully',
       success: true 
     });
   } catch (error: any) {
     console.error('Error sending email:', error);
+    
+    // Set CORS headers even for error responses
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
     return res.status(500).json({ 
       message: 'Error sending email', 
       error: error.message,
