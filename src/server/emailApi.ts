@@ -19,8 +19,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Email sending endpoint
-emailRouter.post('/send-email', (req: Request, res: Response) => {
+// Email sending endpoint - fixed route handler typing
+emailRouter.post('/send-email', async (req: Request, res: Response) => {
   try {
     const { to, subject, text, html } = req.body;
     
@@ -38,19 +38,19 @@ emailRouter.post('/send-email', (req: Request, res: Response) => {
       html,
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error('Error sending email:', error);
-        return res.status(500).json({ 
-          success: false, 
-          message: 'Failed to send email', 
-          error: error instanceof Error ? error.message : String(error) 
-        });
-      }
-      
+    // Using Promise-based approach instead of callback
+    try {
+      const info = await transporter.sendMail(mailOptions);
       console.log('Email sent successfully:', info.response);
       return res.status(200).json({ success: true, message: 'Email sent successfully' });
-    });
+    } catch (emailError) {
+      console.error('Error sending email:', emailError);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Failed to send email', 
+        error: emailError instanceof Error ? emailError.message : String(emailError) 
+      });
+    }
   } catch (error) {
     console.error('Error in request processing:', error);
     return res.status(500).json({ 
