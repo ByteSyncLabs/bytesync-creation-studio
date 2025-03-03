@@ -3,6 +3,8 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
+import type { ViteDevServer } from 'vite';
+import type { IncomingMessage, ServerResponse } from 'http';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -55,8 +57,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   // Create a mock response for our API endpoint
-  configureServer(server) {
-    server.middlewares.use((req, res, next) => {
+  configureServer(server: ViteDevServer) {
+    server.middlewares.use((req: IncomingMessage, res: ServerResponse, next: () => void) => {
       if (req.url === '/success-response.json') {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
