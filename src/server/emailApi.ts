@@ -64,8 +64,10 @@ app.post('/api/send-email', (req: Request, res: Response) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`Email server running on port ${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Email server running on port ${PORT}`);
+  });
+}
 
 export default app;
