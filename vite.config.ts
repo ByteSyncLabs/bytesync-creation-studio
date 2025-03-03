@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -15,7 +16,7 @@ export default defineConfig(({ mode }) => ({
     proxy: {
       // We'll use middleware instead of proxy for email functionality
     },
-    middlewareMode: 'html',
+    middlewareMode: true, // Changed from string to boolean
     configureServer: (server: ViteDevServer) => {
       // Use Express middleware for API routes
       const app = express();
