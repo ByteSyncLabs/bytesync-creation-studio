@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -12,11 +11,11 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Mock API endpoint for email sending
+      // Proxy API requests to our local email server
       '/api/send-email': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:3001',
         changeOrigin: true,
-        rewrite: (path) => '/success-response.json',
+        secure: false,
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('proxy error', err);
@@ -55,17 +54,5 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
-  },
-  // Create a mock response for our API endpoint
-  configureServer(server: ViteDevServer) {
-    server.middlewares.use((req: IncomingMessage, res: ServerResponse, next: () => void) => {
-      if (req.url === '/success-response.json') {
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({ success: true, message: 'Email sent successfully' }));
-        return;
-      }
-      next();
-    });
   }
 }));
