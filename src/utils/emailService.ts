@@ -9,12 +9,12 @@ export interface EmailData {
   html: string;
 }
 
-// Mock function to simulate sending an email through an API call
+// Function to send an email through our API endpoint
 export const sendEmail = async (emailData: EmailData): Promise<boolean> => {
   try {
     console.log('Simulating email sending to:', emailData.to);
     
-    // Simulate an API call with fetch
+    // Call our API endpoint
     const response = await fetch('/api/send-email', {
       method: 'POST',
       headers: {
