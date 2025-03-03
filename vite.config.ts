@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -12,9 +11,8 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react({
-      // Adding TypeScript configuration options here
+      // Only keeping the TypeScript decorators option
       tsDecorators: true,
-      jsxImportSource: "@emotion/react",
     }),
     mode === 'development' &&
     componentTagger(),
