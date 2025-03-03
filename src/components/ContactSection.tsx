@@ -1,10 +1,9 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { sendContactConfirmation } from "@/utils/emailService";
+import { submitContactForm } from "@/api/contact";
 
 const ContactSection: React.FC = () => {
   const { toast } = useToast();
@@ -56,27 +55,22 @@ const ContactSection: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // First, simulate saving the contact message to a database
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
       console.log("Form data being processed:", formData);
       
-      // Send confirmation email to the user who submitted the form
-      const emailSent = await sendContactConfirmation(
-        formData.name,
-        formData.email,
-        formData.subject,
-        formData.message
-      );
+      const success = await submitContactForm({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      });
       
-      if (emailSent) {
+      if (success) {
         toast({
           title: "Message Sent Successfully!",
           description: "Thank you for reaching out. We've sent a confirmation to your email!",
           duration: 5000,
         });
         
-        // Reset form
         setFormData({
           name: "",
           email: "",
@@ -84,7 +78,6 @@ const ContactSection: React.FC = () => {
           message: ""
         });
       } else {
-        // Email couldn't be sent but form was processed
         toast({
           title: "Message Received!",
           description: "Your message was received, but we couldn't send a confirmation email. We'll still contact you soon!",

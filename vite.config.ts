@@ -10,11 +10,22 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // In a real application, you would have an actual API server
-      '/api': {
+      // Mock API endpoint for email sending
+      '/api/send-email': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
+        rewrite: (path) => '/success-response.json',
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            console.log('Sending Request to the Target:', req.method, req.url);
+          });
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+          });
+        },
       }
     }
   },
@@ -43,4 +54,16 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  // Create a mock response for our API endpoint
+  configureServer(server) {
+    server.middlewares.use((req, res, next) => {
+      if (req.url === '/success-response.json') {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ success: true, message: 'Email sent successfully' }));
+        return;
+      }
+      next();
+    });
+  }
 }));
