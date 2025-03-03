@@ -22,7 +22,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Email sending endpoint
-app.post('/api/send-email', (req: Request, res: Response) => {
+app.post('/api/send-email', async (req: Request, res: Response) => {
   try {
     const { to, subject, text, html } = req.body;
     
@@ -40,6 +40,7 @@ app.post('/api/send-email', (req: Request, res: Response) => {
       html,
     };
 
+    // Use callback pattern instead of trying to await the sendMail function
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error('Error sending email:', error);
