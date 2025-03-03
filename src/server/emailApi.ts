@@ -1,16 +1,14 @@
 
 import express from 'express';
 import nodemailer from 'nodemailer';
-import cors from 'cors';
 import bodyParser from 'body-parser';
 import type { Request, Response } from 'express';
 
-const app = express();
-const PORT = 3001;
+// Create an Express router instead of an app
+const emailRouter = express.Router();
 
-// Middleware
-app.use(cors());
-app.use(bodyParser.json());
+// Use body parser middleware
+emailRouter.use(bodyParser.json());
 
 // Create a nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -22,7 +20,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Email sending endpoint
-app.post('/api/send-email', async (req: Request, res: Response) => {
+emailRouter.post('/send-email', (req: Request, res: Response) => {
   try {
     const { to, subject, text, html } = req.body;
     
@@ -40,7 +38,6 @@ app.post('/api/send-email', async (req: Request, res: Response) => {
       html,
     };
 
-    // Use callback pattern instead of trying to await the sendMail function
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error('Error sending email:', error);
@@ -64,11 +61,4 @@ app.post('/api/send-email', async (req: Request, res: Response) => {
   }
 });
 
-// Start the server
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Email server running on port ${PORT}`);
-  });
-}
-
-export default app;
+export default emailRouter;

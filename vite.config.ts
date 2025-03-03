@@ -4,6 +4,8 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import type { ViteDevServer } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
+import emailRouter from './src/server/emailApi';
+import express from 'express';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -11,23 +13,18 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
     proxy: {
-      // Proxy API requests to our local email server
-      '/api/send-email': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-        secure: false,
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
-            console.log('proxy error', err);
-          });
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
-          });
-          proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
-          });
-        },
-      }
+      // We'll use middleware instead of proxy for email functionality
+    },
+    middlewareMode: 'html',
+    configureServer: (server: ViteDevServer) => {
+      // Use Express middleware for API routes
+      const app = express();
+      app.use('/api', emailRouter);
+      
+      // Apply Express as middleware to Vite server
+      server.middlewares.use(app);
+      
+      console.log('📧 Email API middleware configured');
     }
   },
   plugins: [
