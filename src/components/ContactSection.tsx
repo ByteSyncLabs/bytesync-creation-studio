@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { sendContactConfirmation } from "@/utils/emailService";
 
 const ContactSection: React.FC = () => {
   const { toast } = useToast();
@@ -54,27 +55,42 @@ const ContactSection: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // This would typically connect to a backend service
-    // For now, we'll simulate the API call with a timeout
     try {
-      // Simulate API call to send email and store data
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // First, simulate saving the contact message to a database
+      await new Promise(resolve => setTimeout(resolve, 800));
       
-      console.log("Form submitted:", formData);
+      console.log("Form data being processed:", formData);
       
-      toast({
-        title: "Message Sent Successfully!",
-        description: "Thank you for reaching out. We'll contact you soon!",
-        duration: 5000,
-      });
+      // Send confirmation email to the user who submitted the form
+      const emailSent = await sendContactConfirmation(
+        formData.name,
+        formData.email,
+        formData.subject,
+        formData.message
+      );
       
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: ""
-      });
+      if (emailSent) {
+        toast({
+          title: "Message Sent Successfully!",
+          description: "Thank you for reaching out. We've sent a confirmation to your email!",
+          duration: 5000,
+        });
+        
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: ""
+        });
+      } else {
+        // Email couldn't be sent but form was processed
+        toast({
+          title: "Message Received!",
+          description: "Your message was received, but we couldn't send a confirmation email. We'll still contact you soon!",
+          duration: 5000,
+        });
+      }
       
     } catch (error) {
       console.error("Error submitting form:", error);
